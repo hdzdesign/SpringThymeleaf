@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+
+<body>
+<header th:replace="layout/layout :: header"></header>
+<div class="container py-4">
+
+    <div class="card bg-light">
+        <div class="card-header" th:text="${tituloDetalle}"></div>
+            <div class="card-body">
+                <h4 class="card-title">
+                    <a class="btn btn-primary btn-xs" th:href="@{'/donacion/form/' + ${jugadorEntity.id}}" th:text="'Crear Factura'"></a>
+                </h4>
+                <!--#strings.length El objeto Helpers utilitis de strings th:if="${#strings.length(jugadorEntity.foto) > 0}"
+                 que nos proporciona muchos metodos para validar y usar en la vista como en el back.-->
+                <img th:if="${jugadorEntity.foto != null && #strings.length(jugadorEntity.foto) > 0}"
+                                class="img-thumbnail rounded float-left" style="max-width: 25%;"
+                                th:src="@{'/uploads/' + ${jugadorEntity.foto}}"
+                                th:alt="${jugadorEntity.foto}"/>
+                <ul class="list-group">
+                    <li class="list-group-item" th:text="${jugadorEntity.nombre}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.apellido1}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.apellido2}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.dni}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.dorsal}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.mail}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.inscripcion}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.nacimiento}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.edad}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.nacionalidad}"></li>
+                    <li class="list-group-item" th:text="${jugadorEntity.telefono}"></li>
+
+                </ul>
+            <!-- Con este condicional  comprobamos que la lista , si esta vacia muestra el mensaje y si no la tabla.-->
+       <div th:if="${#lists.isEmpty(jugadorEntity.donaciones)}" class="alert alert-info my-4"
+            th:text="'No hay donaciones para el jugador '+
+            ${jugadorEntity.nombre}+' '+
+            ${jugadorEntity.apellido1}">
+        </div>
+            <!-- tabla donde vamos a recuperar todos los datos de la donacion-->
+            <table th:if="${not #lists.isEmpty(jugadorEntity.donaciones)}" class="table table-bordered table-striped my-4">
+                <thead class="thead-inverse">
+                <tr>
+                    <th>Folio</th>
+                    <th>Descripcion</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="donacion: ${jugadorEntity.donaciones}">
+                    <td th:text="${donacion.id}"></td>
+                    <td th:text="${donacion.descripcion}"></td>
+                    <td th:text="${donacion.createAt}"></td>
+                    <td th:text="${donacion.total}"></td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="paginator">
+    <ul class="pagination">
+
+        <!-- vamos a controlar con un condicional
+                si es la primera mostramos el span y si no lo es mostramos el link
+                en la etiqueta <a estamos haciendo referencia a la url y el valor por defecto definidos en el controller-->
+        <li class="page-item" th:class="${page.first? 'page-item disabled': 'page-item'}"><!-- Preguntamos si es primera página habiltamos la clase y si no no lo hacemos-->
+            <span class="page-link" th:if="${page.first}"> Primera</span>
+            <a class="page-link" th:if="${not page.first}" th:href="@{${page.url}(page=0)}">Primera</a>
+        </li>
+
+        <!-- vamos a controlar con un condicional
+             Preguntamos SI TIENE PAGINA ANTERIOR ... MOSTRAMOS EL LINK SI NO LA TIENE MOSTRAMOS EL SPAN UNICAMENTE.
+             en la etiqueta <a estamos haciendo referencia a la url en el controller
+             Y la variable pagina actual -2  de PageRender, menos 2 para paginar en la base de datos.-->
+        <li class="page-item" th:class="${not page.hasPrevious? 'page-item disabled': 'page-item'}">
+
+            <span class="page-link" th:if="${not page.hasPrevious}"> &laquo;</span>
+            <a class="page-link" th:if="${page.hasPrevious}" th:href="@{${page.url}(page=${page.paginaActual-2})}">&laquo;</a>
+        </li>
+
+        <!-- Faltarian los ITEMS , creamos un each , por cada item del list paginas mostramos las paginas
+        si estamos en la pagina actual tenemos un span, si no lo estamos tenemos una url para navegar.
+        En la url le decimos que page= el numero de items-1 porque page por defecto es 0 y en la vista se muestra desde 1.
+        Marcamos con text el numero de paginas recuperado del objeto item-->
+        <li class="page-item" th:each="item : ${page.paginas}" th:class="${item.actual? 'page-item active': 'page-item'}">
+            <span class="page-link" th:if="${item.actual}" th:text="${item.numero}"></span>
+            <a class="page-link" th:if="${not item.actual}" th:href="@{${page.url}(page=${item.numero-1})}" th:text="${item.numero}"></a>
+        </li>
+
+        <!-- vamos a controlar con un condicional
+               Preguntamos SI TIENE PAGINA SIGUIENT ... MOSTRAMOS EL LINK SI NO LA TIENE MOSTRAMOS EL SPAN UNICAMENTE.
+                en la etiqueta <a estamos haciendo referencia a la url y el valor por defecto definidos en el controller
+                PAGE.PAGINAACTUAL PARA MOSTRAR ES SIN -1 , PUESTO QUE SOLO ESTAMOS MOSTRANDO Y NO TRABAJANDO CON BASE DE DATOS.-->
+        <li class="page-item" th:class="${not page.hasNext? 'page-item disabled': 'page-item'}">
+            <span class="page-link" th:if="${not page.hasNext}"> &raquo;</span>
+            <a class="page-link" th:if="${page.hasNext}" th:href="@{${page.url}(page=${page.paginaActual})}">&raquo;</a>
+        </li>
+
+        <!-- vamos a controlar con un condicional
+                si es la ultima mostramos el span y si no lo es mostramos el link
+                en la etiqueta <a estamos haciendo referencia a la url en el controller
+                Y la variable total de paginas-1  de PageRender, menos 1 porque el rango en base de datos es desde 0
+                y en la vista es desde 1.-->
+        <li class="page-item" th:class="${page.last? 'page-item disabled': 'page-item'}">
+
+            <span class="page-link" th:if="${page.last}"> Ultima</span>
+            <a class="page-link" th:if="${not page.last}" th:href="@{${page.url}(page=${page.totalPaginas-1})}">&Uacute;ltima</a>
+        </li>
+
+
+    </ul>
+
+
+</nav>
+
+</body>
+</html>

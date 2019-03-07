@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+<header th:replace="layout/layout :: header"></header>
+<div class="container py-4">
+
+    <div class="card bg-light">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+
+            <h4 class="card-title">
+                <a th:href="@{/form}" class="btn btn-primary btn-xs">crear Jugador</a>
+            </h4>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <!--  <th>id</th>-->
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Dorsal</th>
+                    <th>Inscripicon</th>
+                    <th>Editar</th>
+                    <th>Detalle</th>
+                    <th>Crear Factura</th>
+                    <th>Eliminar</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="jugador: ${jugadores}">
+                   <!-- <td><a class="btn btn-primary btn-xs" th:href="@{/ver/} + ${jugador.id}" th:text="${jugador.id}"></a></td>-->
+                    <td th:text="${jugador.nombre}"></td>
+                    <td th:text="${jugador.apellido1}"></td>
+                    <td th:text="${jugador.dorsal}"></td>
+                    <td th:text="${jugador.inscripcion}"></td>
+                    <td><a class="btn btn-primary btn-xs" th:href="@{/form/} + ${jugador.id}" th:text="'Editar'"></a>
+                    </td>
+                    <td><a class="btn btn-warning btn-xs" th:href="@{/ver/} + ${jugador.id}" th:text="'Detalle'"></a>
+                    </td>
+                    <td><a class="btn btn-warning btn-xs" th:href="@{'/donacion/form/' + ${jugador.id}}" th:text="'Crear Factura'"></a></td>
+
+                    <td><a class="btn btn-danger btn-xs" th:href="@{/eliminar/} + ${jugador.id}" th:text="'Eliminar'"
+                           onclick="return confirm('¿Estas seguro que quieres elimiar?')"></a></td>
+
+                </tr>
+                </tbody>
+
+            </table>
+            <nav th:replace="paginador :: paginator"></nav>
+
+
+        </div>
+    </div>
+
+
+</div>
+
+<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

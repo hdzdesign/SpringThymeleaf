@@ -1,0 +1,50 @@
+body{
+    font-size: 200%;
+    font-weight: 300;
+}
+.foto_jugador {
+    width: 55px;
+    height: auto;
+    margin: 5px 20px 5px 5px;
+    padding: 2px;
+    -webkit-filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.5));
+}
+.col-75 {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+
+ul.nav.nav-tabs{
+    font-size: 159%;
+    font-weight: 50;
+}
+
+input#first_name.form-control {
+    font-size: 15px;
+}
+input#last_name.form-control {
+    font-size: 15px;
+}
+input#phone.form-control {
+    font-size: 15px;
+}
+input#posicion.form-control {
+    font-size: 15px;
+}
+input#localidad.form-control {
+    font-size: 15px;
+}
+input#edad.form-control {
+    font-size: 15px;
+}
+input#email.form-control {
+    font-size: 15px;
+}
+input#nacimiento.form-control {
+    font-size: 15px;
+}
+div.panel-body#a{
+    font-size: 30px; 
+}
+

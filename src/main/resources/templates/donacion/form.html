@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+
+</head>
+<body>
+
+<header th:replace="layout/layout :: header"></header>
+<div class="container py-4">
+
+    <div class="card bg-light">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+            <h4 class="card-title">
+                <a class="btn btn-light btn-xs"
+                   th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}"
+                   th:text="'&laquo; volver'"></a>
+            </h4>
+            <!-- formulario de entrada de factura.-->
+            <form th:action="@{/donacion/form/}"
+                  th:object="${donacion}"
+                  method="post">
+            <!-- Recogemos los datos del jugador y su apellido, desabilitamos el campo para que no pueda ser editado.-->
+            <div class="form-group row">
+                <label for="jugadorEntity" class="col-sm-2 col-form-label"
+                       th:text="'Jugador'"></label>
+                <div class="col-sm-6">
+            <input name="jugadorEntity"
+                   th:value="${donacion.jugadorEntity.nombre} + ' ' + ${donacion.jugadorEntity.apellido1}"
+                   class="form-control"
+                   disabled='disabled'/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="descripcion" class="col-sm-2 col-form-label"
+                       th:text="'descripcion'"></label>
+                <div class="col-sm-6">
+                    <input type="text" th:field="*{descripcion}" class="form-control"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="observacion" class="col-sm-2 col-form-label" th:text="'observacion'"></label>
+                <div class="col-sm-6">
+                    <textarea th:field="*{observacion}"
+                              class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="buscar_producto" class="col-sm-2 col-form-label"
+                       th:text="'Buscar producto'"></label>
+                <div class="col-sm-6">
+                    <input type="text" name="buscar_producto" id="buscar_producto" class="form-control"/>
+                </div>
+            </div>
+            <table th:replace="donacion/plantilla-items :: itemsDonacion"></table>
+            <table id="cargarItemProductos"
+                   class="table table-sm table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                    <th>Eliminar</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <h5> Total <span class="badge badge-secondary" id="gran_total">0</span></h5>
+
+            <div class="form-group row">
+                <div class="col-sm-6">
+                    <input type="submit" th:value="${titulo}"
+                           class="btn btn-secondary"/>
+                </div>
+            </div>
+
+            </form>
+            <!-- FIN formulario de entrada de factura.-->
+        </div>
+    </div>
+</div>
+
+<footer th:replace="layout/layout :: footer"></footer>
+<script th:replace="donacion/js/autocomplete-donacion :: javascript"></script>
+</body>
+</html>

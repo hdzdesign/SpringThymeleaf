@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Utilizamos la Jquery con ajax para realizar llamadas asincronas a la base de datos para buscar las donaciones
+
+    Muesta los datos  en el autocomplete a medida que vamos escribiendo
+    1º SOURCE : Se encarga de realizar la petición AJAX
+        procesamos los datos.
+            con AJAX pasamos todos los datos en json y implementamos el metodo success para controlar la respuesta.
+            request.term : Dentro del objeto request almacenamos en term lo que vayamos escribiendo en el imput.
+            dataType : Tipo de dato.
+            data:{ Pasamos el parametro como parametro del request. RequestParam. en este caso es 1 GET y ya tenemos los datos}
+            success(data) : Le pasamos los parametros almacenados anteriormente, para procesar la respuesta.
+                response($.map(data, function(item))
+                    1º Por cada elemento de DATA, retornara los valores definidos de cada item. ID , NOMBRE, PRECIO.
+
+
+    2º Select :  Se encarga de selecionar el valor y realizamos tareas con el.
+        function(event, ui) ^->
+            Recogemos  unicamente el label del item.
+       2.1 : Almacenamos en 1 variable la plantilla de las lineas de la factura, las cuales vamos a remplazar ,
+        dinamicamente con los parametros que recuperamos con la función AJAX.
+
+    3º itemsHelper : Lo usaremos como su nombre indica de ayuda para realizar varias funciones.
+        3.1 : Calculamos el total del importe y lo agregamos al selector para que se muestre en la factura.
+        3.2 : hasProducto: Busca linea por linea si existe el producto, por cada input que contenga item_id[] lo recorre
+              con una función anonima  comprobamos que si el id es igual al que esta en el input  es true entonces existe.
+        3.3 : incrementaCantidad: function(id, precio)
+              Recuperamos la cantidad desde la plantilla con cantidad_id y preguntamos si tiene cantidad lo convertimos a integer.
+              y se lo asigmanos a la variable cantidad.  si no retornamos con :0, si es verdadero la función sigue y le asignamos ++ a la cantidad.
+        3.4 : usamos this. para invocar el metodo calcular importe y le pasamos id , precio y la cantidad ya incrementada en 1.
+
+        3.5 : Antes de seleccionar la linea hacemos una comprobación de si existe el producto con hasProducto y el User interface (ui)
+            , si existe incrementamos la cantidad y el precio.
+            y si no retornamos false.
+        3.6 : EliminarLineaFactura: function() <-> selecionamos la linea por el row Id y lo eliminamos con remove
+        3.7 : calcularGranTotal : function <-> recorremos el con un for el array de lineas con id [total_importe_] y lo vamos concatenando a 1 variable.
+
+
+
+-->
+<script type="text/javascript" th:fragment="javascript">
+
+    $(document).ready(function () {
+        $("#buscar_producto").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/donacion/cargar-productos/" + request.term,
+                    dataType: "json",
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                value: item.id,
+                                label: item.nombre,
+                                precio: item.precio,
+                            };
+                        }));
+                    },
+                });
+            },
+            select: function (event, ui) {
+                // $("#buscar_producto").val(ui.item.label);
+                if (itemsHelper.hasProducto(ui.item.value)) {
+                    itemsHelper.incrementaCantidad(ui.item.value, ui.item.precio);
+                    return false;
+                }
+
+                var linea = $("#plantillaItemsDonacion").html();
+                linea = linea.replace(/{ID}/g, ui.item.value);
+                linea = linea.replace(/{NOMBRE}/g, ui.item.label);
+                linea = linea.replace(/{PRECIO}/g, ui.item.precio);
+
+
+                $("#cargarItemProductos tbody").append(linea);
+                itemsHelper.calcularImporte(ui.item.value, ui.item.precio, 1);
+                return false;
+            }
+        });
+        $("form").submit(function () {
+           $("#plantillaItemsDonacion").remove();
+           return;
+        });
+    });
+    var itemsHelper = {
+        calcularImporte: function (id, precio, cantidad) {
+            $("#total_importe_" + id).html(parseInt(precio) * parseInt(cantidad));
+            this.calcularGranTotal();
+        },
+
+        hasProducto: function (id) {
+            var resultado = false;
+            $('input[name="item_id[]"]').each(function () {
+                if (parseInt(id) == parseInt($(this).val())) {
+                    resultado = true;
+                }
+            });
+            return resultado;
+        },
+        incrementaCantidad: function (id, precio) {
+            var cantidad = $("#cantidad_" + id).val() ? parseInt($("#cantidad_" + id).val()) : 0;
+            $("#cantidad_" + id).val(++cantidad);
+            this.calcularImporte(id, precio, cantidad);
+
+        },
+        eliminarLineaFactura: function (id) {
+            $("#row_" + id).remove();
+            this.calcularGranTotal();
+        },
+        calcularGranTotal: function () {
+            var total = 0;
+            $('span[id^="total_importe_"]').each(function () {
+                total += parseInt($(this).html());
+
+            });
+            $('#gran_total').html(total);
+        }
+    }
+
+</script>
+
+
+</body>
+</html>
