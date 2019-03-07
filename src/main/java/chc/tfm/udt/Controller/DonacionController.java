@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -30,6 +31,19 @@ public class DonacionController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private IJugadorService jugadorService;
+
+    public String ver(@ModelAttribute("donacion") @PathVariable(value = "id") Long id,
+                      Model model,
+                      RedirectAttributes push){
+        DonacionEntity donacion = jugadorService.findDonacionById(id);
+       if(donacion == null){
+           push.addFlashAttribute("error", "La factura no existe en la base de datos");
+           return "redirect/listar";
+       }
+       model.addAttribute("donacion", donacion);
+       model.addAttribute("titulo", "Factura: ".concat(donacion.getDescripcion()));
+       return "donacion/ver";
+    }
 
     /**
      * Con este metodo vamos a comunicarnos con el formulario que va hacer posible la inserción en base de datos de los
@@ -79,11 +93,23 @@ public class DonacionController {
 
 
     @PostMapping("/form")
-    public String guardar(@Valid @ModelAttribute("donacion") DonacionEntity donacion,
+    public String guardar( @ModelAttribute("donacion") @Valid DonacionEntity donacion, BindingResult result, Model model,
                           @RequestParam(name = "item_id[]",required = false) Long[] itemId,
                           @RequestParam(name = "cantidad[]",required = false) Integer[] cantidad,
-                          RedirectAttributes push,
-                          SessionStatus status) {
+                          RedirectAttributes push, SessionStatus status){
+        log.info("Estamos en Guardar");
+
+        if(result.hasErrors()){
+            log.info("Entramos en el If para comprobar la descripción");
+            model.addAttribute("titulo", "Crear Factura");
+            return "donacion/form";
+        }
+        if(itemId == null || itemId.length ==0){
+            log.info("Entramos en el If para comprobar las lineas");
+            model.addAttribute("titulo", "Crear Factura");
+            model.addAttribute("error", "Las lineas de la factura no pueden estar vacias");
+            return "donacion/form";
+        }
         for (int i = 0; i < itemId.length; i++ ){
             ProductoEntity productoEntity = jugadorService.findProductoEntityById(itemId[i]);
 

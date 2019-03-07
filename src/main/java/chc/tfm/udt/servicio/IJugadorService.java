@@ -74,4 +74,11 @@ public interface IJugadorService {
      */
      ProductoEntity findProductoEntityById(Long id);
 
+    /**
+     * Esta clase nos permite buscar una factura por su id
+     * @param id
+     * @return
+     */
+     DonacionEntity findDonacionById(Long id);
+
 }

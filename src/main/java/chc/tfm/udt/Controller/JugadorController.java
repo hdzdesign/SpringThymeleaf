@@ -163,7 +163,7 @@ public class JugadorController {
      *      * 2º Movemos la imágen, Un string que contiene el nombre unico de la foto , generado con la interfaz UUID.
      */
     @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String guardar(@Valid    JugadorEntity jugadorEntity, BindingResult result,
+    public String guardar(@Valid JugadorEntity jugadorEntity, BindingResult result,
                           Model model, RedirectAttributes push,
                           SessionStatus status, @RequestParam("file")MultipartFile foto){
 

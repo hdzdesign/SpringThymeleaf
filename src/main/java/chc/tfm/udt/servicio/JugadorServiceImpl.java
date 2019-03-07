@@ -78,4 +78,10 @@ public class JugadorServiceImpl implements IJugadorService {
     public ProductoEntity findProductoEntityById(Long id) {
         return productoDAO.findById(id).orElse(null);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DonacionEntity findDonacionById(Long id) {
+        return donacionDAO.findById(id).orElse(null);
+    }
 }
