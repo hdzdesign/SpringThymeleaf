@@ -81,4 +81,6 @@ public interface IJugadorService {
      */
      DonacionEntity findDonacionById(Long id);
 
+    void deleteDonacion(Long id);
+
 }

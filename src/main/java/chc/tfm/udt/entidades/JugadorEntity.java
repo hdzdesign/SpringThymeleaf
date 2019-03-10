@@ -95,6 +95,8 @@ public class JugadorEntity implements Serializable {
         donaciones.add(donacionEntity);
     }
 
-
-
+    @Override
+    public String toString() {
+        return "Nombre y Apellido: " + nombre + " " + apellido1;
+    }
 }

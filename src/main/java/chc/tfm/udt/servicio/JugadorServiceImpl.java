@@ -84,4 +84,11 @@ public class JugadorServiceImpl implements IJugadorService {
     public DonacionEntity findDonacionById(Long id) {
         return donacionDAO.findById(id).orElse(null);
     }
+
+    @Override
+    @Transactional
+    public void deleteDonacion(Long id) {
+        donacionDAO.deleteById(id);
+
+    }
 }
