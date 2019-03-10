@@ -81,6 +81,11 @@ public interface IJugadorService {
      */
      DonacionEntity findDonacionById(Long id);
 
+    /**
+     * Este metodo va a borrar 1 registro de donación que estara asociado a 1 jugador.
+     * @param id
+     */
+
     void deleteDonacion(Long id);
 
 }
