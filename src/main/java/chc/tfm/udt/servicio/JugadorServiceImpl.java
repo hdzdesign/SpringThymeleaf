@@ -49,6 +49,12 @@ public class JugadorServiceImpl implements IJugadorService {
         return jugadorDAO.findById(id).orElse(null);
     }
 
+    @Override
+    @Transactional(readOnly = true )
+    public JugadorEntity fetchByWithDonaciones(Long id) {
+        return jugadorDAO.fetchByIdWithDonaciones(id);
+    }
+
 
     @Override
     @Transactional
@@ -84,4 +90,19 @@ public class JugadorServiceImpl implements IJugadorService {
     public DonacionEntity findDonacionById(Long id) {
         return donacionDAO.findById(id).orElse(null);
     }
+
+    @Override
+    @Transactional
+    public void deleteDonacion(Long id) {
+        donacionDAO.deleteById(id);
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DonacionEntity fechDonacionByIdWithJugadorWithItemDonacionWithProducto(Long id) {
+        return donacionDAO.fechByIdWithJugadorWithItemDonacionWithProducto(id);
+    }
+
+
 }

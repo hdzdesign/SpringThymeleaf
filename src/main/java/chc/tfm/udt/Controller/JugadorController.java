@@ -76,10 +76,10 @@ public class JugadorController {
      */
     @GetMapping(value = "/ver/{id}")
     public String ver(@PathVariable(value = "id") Long id , Map<String,Object> model, RedirectAttributes push){
-        JugadorEntity jugadorEntity = jugadorService.findOne(id);
+        JugadorEntity jugadorEntity =  jugadorService.fetchByWithDonaciones(id);// jugadorService.findOne(id);
         if(jugadorEntity == null){
             push.addFlashAttribute("error", "El jugador no existe en la base de datos");
-            return "redirect/listar";
+            return "redirect:/listar";
         }
         model.put("jugadorEntity",jugadorEntity);
         model.put("tituloDetalle","Detalle del jugador: " + jugadorEntity.getNombre());
@@ -90,10 +90,10 @@ public class JugadorController {
      * USAMOS ESTE METODO PARA LISTAR TODOS LOS JUGADORES QUE ESTAN EN BASE DE DATOS.
      * @param model USAMOS ESTE OBJETO PARA PASAR DATOS A LA VISTA.
      * CREAMOS EL OBJETO PAGEABLE Y LE PASAMOS UN NUMERO DE PAGINAS PARA MOSTRAR, LE ASIGNAMOS UN VALOR POR DEFECTO Y UNA VARIABLE.
-     *
+     * Creamos 1 array con 2 rutas , listar y la página de incio de la aplicación
      * @return
      */
-    @RequestMapping(value = "/listar", method = RequestMethod.GET)
+    @RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
     public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model){
         Pageable pageRequest = PageRequest.of(page,5);
         Page<JugadorEntity> jugadorEntityPage = jugadorService.findAll(pageRequest);

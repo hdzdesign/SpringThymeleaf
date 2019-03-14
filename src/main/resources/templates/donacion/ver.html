@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+
+<body>
+<header th:replace="layout/layout :: header"></header>
+<div class="container py-4">
+    <div class="card bg-light">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+            <h4 class="card-title">
+                <a th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}" class="btn btn-light btn-xs"> &laquo;
+                    Volver</a>
+            </h4>
+            <ul class="list-group my-2">
+                <li class="list-group-item list-group-item-primary" th:text="'Datos del ciente'"></li>
+                <li class="list-group-item" th:text="${donacion.jugadorEntity}"></li>
+                <li class="list-group-item" th:text="${donacion.jugadorEntity.mail}"></li>
+
+
+            </ul>
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-success" th:text="'Datos de la factura'"></li>
+                <li class="list-group-item" th:text="'Folio: ' + ${donacion.id}"></li>
+                <li class="list-group-item" th:text="'Descripción: ' + ${donacion.descripcion}"></li>
+                <li class="list-group-item" th:text="'Fecha: ' + ${donacion.createAt}"></li>
+
+            </ul>
+            <!-- If que va a comporobar que existen lineas en la factura-->
+            <div class="alert alert-info my-4"
+                 th:if="${#lists.isEmpty(donacion.items)}"
+                 th:text="'No Existen líneas para la factura: ' + ${donacion.descripcion}">
+            </div>
+            <!-- If que va a comporobar que existen lineas en la factura, de lo contrario no muestra la tabla-->
+            <table th:if="${not #lists.isEmpty(donacion.items)}"
+                   class="table table-striped table-hover table-bordered my-3">
+
+                <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Catntidad</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Creamos 1 ForEach para recorrer los items de la donación.
+                Accedemos a los productos a través de los items
+                Recogemos la cantidad directamente del item y llamamos al metodo calcularValor()
+                Cuando se recogen datos de 1 get no se ponen los parentesis.-->
+                <tr th:each="linea: ${donacion.items}">
+                    <td th:text="${linea.productoEntity.nombre}"></td>
+                    <td th:text="${linea.productoEntity.precio}"></td>
+                    <td th:text="${linea.cantidad}"></td>
+                    <td th:text="${linea.calcularValor()}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <h5 class="float-right">Gran total <span th:text="${donacion.total}" class="badge badge-secondary"></span>
+            </h5>
+            <!-- Comprobamos que vienen observaciones y si es así las mostramos en 1 CARD.-->
+            <div class="card border-info mb-4" style="max-width: 20rem;">
+                <div class="card-header"> Observaciones</div>
+                <div class="card-body">
+                    <p class="card-text"
+                       th:text="${donacion.observacion}"
+                       th:if="${not #strings.isEmpty(donacion.observacion)}">
+                    </p>
+                    <h4 class="card-title"
+                        th:if="${#strings.isEmpty(donacion.observacion)}"
+                        th:text="'No tiene observaciones'">
+                    </h4>
+                </div>
+            </div>
+            <a th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}" class="btn btn-light btn-xs"> &laquo; Volver</a>
+        </div>
+    </div>
+
+</div>
+
+<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

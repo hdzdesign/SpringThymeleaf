@@ -45,7 +45,7 @@ public class DonacionEntity implements Serializable {
      * puesto que es una relación unidireccional.
      * Hay que crear el campo donacion_id en la tabla  en base datos no en el Entity.
      */
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "donacion_id")
     private List<ItemDonacionEntity> items;
 

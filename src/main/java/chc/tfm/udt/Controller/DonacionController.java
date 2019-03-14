@@ -31,11 +31,12 @@ public class DonacionController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private IJugadorService jugadorService;
-
-    public String ver(@ModelAttribute("donacion") @PathVariable(value = "id") Long id,
+    @GetMapping("/ver/{id}")
+    public String ver(@PathVariable(value = "id") Long id,
                       Model model,
                       RedirectAttributes push){
-        DonacionEntity donacion = jugadorService.findDonacionById(id);
+        log.info("LLega al controller VER");
+        DonacionEntity donacion = jugadorService.fechDonacionByIdWithJugadorWithItemDonacionWithProducto(id);//jugadorService.findDonacionById(id);
        if(donacion == null){
            push.addFlashAttribute("error", "La factura no existe en la base de datos");
            return "redirect/listar";
@@ -124,6 +125,17 @@ public class DonacionController {
         status.setComplete();
         push.addFlashAttribute("success", "La Donación ha sido asignada con exito");
         return "redirect:/ver/" + donacion.getJugadorEntity().getId();
+    }
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes push){
+        DonacionEntity donacion = jugadorService.findDonacionById(id);
+        if(donacion != null){
+            jugadorService.deleteDonacion(id);
+            push.addFlashAttribute("success", "La factura fue eliminada correctamente");
+            return "redirect:/ver/" + donacion.getJugadorEntity().getId();
+        }
+        push.addFlashAttribute("error", "La factura no existe en la base de datos");
+        return "redirect:/listar";
     }
 
 
