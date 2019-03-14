@@ -36,7 +36,7 @@ public class DonacionController {
                       Model model,
                       RedirectAttributes push){
         log.info("LLega al controller VER");
-        DonacionEntity donacion = jugadorService.findDonacionById(id);
+        DonacionEntity donacion = jugadorService.fechDonacionByIdWithJugadorWithItemDonacionWithProducto(id);//jugadorService.findDonacionById(id);
        if(donacion == null){
            push.addFlashAttribute("error", "La factura no existe en la base de datos");
            return "redirect/listar";

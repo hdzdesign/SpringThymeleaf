@@ -40,6 +40,8 @@ public interface IJugadorService {
      */
     JugadorEntity findOne(Long id);
 
+    JugadorEntity  fetchByWithDonaciones(Long id);
+
     /**
      * Metodo para buscar por nombre a los jugadores
      * @param nombre
@@ -87,5 +89,14 @@ public interface IJugadorService {
      */
 
     void deleteDonacion(Long id);
+
+    /**
+     * ESte metodo es el encargado de realizar 1 consulta con Inner join para reducir la carga de consultas con las
+     * entity que estan relacionadas.
+     * @param id
+     * @return
+     */
+
+    DonacionEntity fechDonacionByIdWithJugadorWithItemDonacionWithProducto(Long id);
 
 }
