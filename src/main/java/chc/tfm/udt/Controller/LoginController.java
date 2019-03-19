@@ -3,6 +3,7 @@ package chc.tfm.udt.Controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -18,10 +19,14 @@ public class LoginController {
      * @return
      */
     @GetMapping("/login")
-    public String login(Model model, Principal principal, RedirectAttributes push){
+    public String login(@RequestParam(value = "error", required = false) String error,
+            Model model, Principal principal, RedirectAttributes push){
         if(principal != null){
             push.addFlashAttribute("info", "Ya ha iniciado sesión anteriormente");
             return "redirect:/";
+        }
+        if(error != null){
+            model.addAttribute("error", "Error en el login: nombre de usuario o contraseña incorrecta");
         }
 
         return "login";
