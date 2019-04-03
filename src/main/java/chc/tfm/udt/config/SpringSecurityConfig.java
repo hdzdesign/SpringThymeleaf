@@ -1,5 +1,6 @@
 package chc.tfm.udt.config;
 
+import chc.tfm.udt.auth.LoginSuccesHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +18,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      * Spring antes de ejecutar cualquier ruta , spring utiliza un interceptor para que nada se ejecute sin antes comprobar
      * los roles de acceso
      */
+    @Autowired
+    private LoginSuccesHandler succesHandler;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         /**
@@ -34,10 +37,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/donacion/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                    .formLogin().loginPage("/login")
+                    .formLogin()
+                        .successHandler(succesHandler)
+                        .loginPage("/login")
                     .permitAll()
                 .and()
-                    .logout().permitAll();
+                    .logout().permitAll()
+                .and()
+                    .exceptionHandling().accessDeniedPage("/error_403");
     }
 
     /**
@@ -56,6 +63,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
          */
         build.inMemoryAuthentication()
                 .withUser(users.username("admin").password("1234").roles("ADMIN", "USER"))
-                .withUser(users.username("carlos").password("1234").roles("USER"));
+                .withUser(users.username("carlos").password("1234").roles("USER"))
+                .withUser("pepe").password("pepe").roles("ADMIN");
     }
 }

@@ -11,6 +11,8 @@ import chc.tfm.udt.utils.paginator.PageRender;
 /**
  * import Springframework
  */
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -18,6 +20,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,17 +36,21 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 /**
  * import de javax
  */
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 /**
  * imports propios de JAVA.
  */
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Collection;
 import java.util.Map;
 
 @SessionAttributes("jugadorEntity")
 @Controller
 public class JugadorController {
+
+    protected final Log logger = LogFactory.getLog(this.getClass());
 
     @Autowired
     private IJugadorService jugadorService;
@@ -94,7 +106,53 @@ public class JugadorController {
      * @return
      */
     @RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
-    public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model){
+    public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
+                         Authentication authentication,
+                         HttpServletRequest request){
+
+        if(authentication != null){
+        logger.info("Hola Usuario autenticado, tu username es: ".concat(authentication.getName()));
+        }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if(auth != null){
+            logger.info("utilizando forma estatica SecurityContextHolder.getContext().getAuthentication(): usuario autenticado, username "
+                    .concat(auth.getName()));
+        }
+        /**
+         * FORMA 1º
+         * Creamos 1 metodo hasRole que valida los roles
+         * invocamos el metodo hasRole dentro de 1 if peusto que es 1 booolean y le pasamos por parametro el rol que deseamos.
+         */
+        if(hasRole("ROLE_ADMIN")){
+            logger.info("Hola ".concat(auth.getName().concat(" tienes acceso")));
+        }else{
+            logger.info("Hola ".concat(auth.getName().concat(" No tienes acceso")));
+        }
+
+        /**
+         * Esta clase de Spring nos va reducir la cantidad de código que nosotros tenemos que introducir puesto que esta definido
+         * en esta interfaz, es necesario inyectar la interfaz HttpServletRequest
+         * El metodo hasRole de esta misma clase es igual que lo que estamos llamando en la interfaz, por tanto esta forma de
+         * validar los roles sería la mas escalable y la que menos código es necesario realizar.
+         */
+        SecurityContextHolderAwareRequestWrapper securityContext = new SecurityContextHolderAwareRequestWrapper(request, "ROLE_");
+        if(securityContext.isUserInRole("ADMIN")){
+            logger.info("Forma usando SecurityContextHolderAwareRequestWrapper: Hola ".concat(auth.getName().concat(" tienes acceso")));
+        }else{
+            logger.info("Forma usando SecurityContextHolderAwareRequestWrapper: Hola ".concat(auth.getName().concat(" No tienes acceso")));
+        }
+        /**
+         * 4º FORMA
+         * De forma nativa usando el HttpServletRequest vamos a chequear los roles , es importante añadir el prefijo ROL
+         */
+        if(request.isUserInRole("ROLE_ADMIN")){
+            logger.info("Forma usando de forma nativa HttpServletRequest request : Hola ".concat(auth.getName().concat(" tienes acceso")));
+        }else{
+            logger.info("Forma usando de forma nativa HttpServletRequest request: Hola ".concat(auth.getName().concat(" No tienes acceso")));
+        }
+
         Pageable pageRequest = PageRequest.of(page,5);
         Page<JugadorEntity> jugadorEntityPage = jugadorService.findAll(pageRequest);
         PageRender<JugadorEntity> pageRender = new PageRender<>("/listar", jugadorEntityPage);
@@ -224,6 +282,50 @@ public class JugadorController {
                 }
             }
         return "redirect:/listar";
+    }
+
+    /**
+     * Metodo para validar los roles.
+     * El objeto SecurityContexgt nos va a servir para recuperar las autenticaciones del contexto de Spring
+     * Creamos 1 objeto de tipo Authentication y con el objeto SecurityContext recuperamos todas las autenticaciones
+     * Creammos validaciones por si alguno de los objetos viniera nulo.
+     * Cremos 1 Collection , objeto de Java Util, creamos la colección de GrantedAuthority , que cualquier clase Role
+     * que este en nuestra aplicación tiene que implementar esta interfaz.
+     * con el signo Ternario, vamos a implementar 1 generico y decir que es 1 colección de cualquier tipo de objeto que implemte
+     * esta interfaz o herede de ella, ahora recuperamos con auth una lista de todos los autorities
+     *
+     * Spring Automaticamente maneja los roles de la aplicación con la clase SimpleGratedAuthority --- implementa a GrantedAuthority
+     * @param role
+     * @return
+     */
+    private boolean hasRole(String role){
+        SecurityContext context = SecurityContextHolder.getContext();
+        if(context == null){
+            return false;
+        }
+       Authentication auth =  context.getAuthentication();
+        if(auth == null){
+            return false;
+        }
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        /**
+         * 3º FORMA
+         * Esta linea va a validar a través de la clase SimpleGrantedAuthority si la colección contiene un rol, esto
+         * retornara un true o un false, no retornara el nombre del ROL como de la otra forma , recorriendo la colección
+         */
+        return authorities.contains(new SimpleGrantedAuthority(role));
+/**
+ * 2º FORMA
+ * Con este for recorremos la lista collection y podemos saber cual es el nombre del ROL autenticado
+ */
+       /* for(GrantedAuthority authority : authorities){
+            if(role.equals(authority.getAuthority())){
+                logger.info("Hola ".concat(auth.getName().concat(" tu rol es: ".concat(authority.getAuthority()))));
+                return true;
+            }
+        }
+        return false;*/
+
     }
 }
 
