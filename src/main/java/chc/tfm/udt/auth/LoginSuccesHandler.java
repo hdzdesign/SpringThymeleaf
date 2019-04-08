@@ -33,19 +33,23 @@ public class LoginSuccesHandler extends SimpleUrlAuthenticationSuccessHandler {
          */
         SessionFlashMapManager flashMapManager = new SessionFlashMapManager();
         /**
-         * Usamos esta forma porque nos epuede usar el RedirectAtributte que usamos en el controlador, esta clase
+         * Usamos esta forma porque nos epuede usar el RedirectAtributte que usamos en el controlador, esta clase,
+         * con este mapa , vamos a poder pasar a la vista mensajes.
+         * con el objeto Authenticatión que hereda de principal podemos sacar el nombre del usuario logado
          * hereda de HasMap.
          */
         FlashMap flashMap = new FlashMap();
         flashMap.put("success","Hola, " + authentication.getName()+ " Has inciado sesión con exito");
         /**
-         * Al heredaar de una clase que tiene el objeto Logger podemos utilizarlo en esta clase.
+         * Al heredaar de una clase que tiene el objeto Logger podemos utilizarlo en esta clase,
+         * El objeto authentication podemos comprobar si el usuario esta logeado , al heredar de Principal
          */
         if(authentication != null){
             logger.info("El usuario '" + authentication.getName() + "' ha iniciado sesión con exito");
         }
         /**
          * Con este metodo vamos a guardar el Map de salida , le pasamos el request y el respose, ademas del flashMap
+         * Con el objeto SessionFlashMapManager podemos guardar los mensajes generados con el map , y pasarlos a la vista.
          */
         flashMapManager.saveOutputFlashMap(flashMap,request,response);
 

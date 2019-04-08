@@ -20,6 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -61,6 +63,7 @@ public class JugadorController {
      * para pasarlo a la vista en el body.
      * En el value , usamos una expresión regular para formatear la extensión de la imagén
      */
+    @Secured ({"ROLE_USER","ROLE_ADMIN"})
     @GetMapping(value = "/uploads/{filename:.+}")
     public ResponseEntity<Resource> verFoto(@PathVariable String filename){
         Resource recurso = null;
@@ -84,8 +87,10 @@ public class JugadorController {
      * @param id El identificador del cliente
      * @param model Pasamos datos a la vista con el objeto MAP, clave Valor.
      * @param push REDIRECTATTributes para mensajes PUSH en la vista.
+     * @PreAuthorize(hasAnyRole) ver documetación en spring Scurirty
      * @return
      */
+   @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping(value = "/ver/{id}")
     public String ver(@PathVariable(value = "id") Long id , Map<String,Object> model, RedirectAttributes push){
         JugadorEntity jugadorEntity =  jugadorService.fetchByWithDonaciones(id);// jugadorService.findOne(id);
@@ -105,6 +110,7 @@ public class JugadorController {
      * Creamos 1 array con 2 rutas , listar y la página de incio de la aplicación
      * @return
      */
+
     @RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
     public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
                          Authentication authentication,
@@ -168,6 +174,7 @@ public class JugadorController {
      * @param model
      * @return
      */
+    @Secured ("ROLE_ADMIN")
     @RequestMapping(value = "/form")
     public String crear(Map<String, Object> model){
         JugadorEntity jugadorEntity = new JugadorEntity();
@@ -185,6 +192,7 @@ public class JugadorController {
      * @param push Objeto que usamos para mostrar mensajes de error o correcto al usuario por pantalla , al realizar 1 acción
      * @return
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/form/{id}")
     public String editar (@PathVariable(value = "id") Long id, Map<String , Object> model,RedirectAttributes push){
         JugadorEntity jugadorEntity = null;
@@ -220,6 +228,7 @@ public class JugadorController {
      *      * 1º LLamamos al servicio uploadFileService.delete y le pasamos el nombre de la imágen.
      *      * 2º Movemos la imágen, Un string que contiene el nombre unico de la foto , generado con la interfaz UUID.
      */
+    @Secured ("ROLE_ADMIN")
     @RequestMapping(value = "/form", method = RequestMethod.POST)
     public String guardar(@Valid JugadorEntity jugadorEntity, BindingResult result,
                           Model model, RedirectAttributes push,
@@ -268,6 +277,7 @@ public class JugadorController {
      * REDIRECTATRIBUTES : USAMOS ESTE OBJETO PARA MOSTRAR AL USUARIO UN MENSAJE POR PANTALLA DE SUCCESS O ERROR AL REALIZAR 1 ACCIÓN.
      * @return
      */
+    @Secured ("ROLE_ADMIN")
     @RequestMapping(value = "/eliminar/{id}")
     public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes push){
         if(id > 0){

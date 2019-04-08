@@ -36,6 +36,8 @@ INSERT INTO productos (nombre, precio, create_at) VALUES ('Camiseta', 110, NOW()
 INSERT INTO productos (nombre, precio, create_at) VALUES ('Gorra', 80, NOW());
 
 
+
+
 /*Donacion de ejemplo*/
 
 

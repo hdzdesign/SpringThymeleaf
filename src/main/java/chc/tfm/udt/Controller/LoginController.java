@@ -27,12 +27,13 @@ public class LoginController {
         log.info("Entramos en login");
         if(principal != null){
             log.info("En principal");
-            push.addFlashAttribute("info", "Ya ha iniciado sesión anteriormente");
+            push.addFlashAttribute("info", "Ya ha iniciado sesión anteriormente Sr. "+principal.getName());
             return "redirect:/";
         }
         if(error != null){
             log.info("Entramos error");
-            model.addAttribute("error", "Error en el login: nombre de usuario o contraseña incorrecta");
+            model.addAttribute("error",
+                                "Error en el login: nombre de usuario o contraseña incorrecta");
         }
         if(logout != null){
             log.info("Entramos logout");

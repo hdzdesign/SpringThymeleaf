@@ -1,10 +1,9 @@
 package chc.tfm.udt.config;
 
 
-/*import org.slf4j.Logger;
-*/import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -32,9 +31,27 @@ public class MvcConfig implements WebMvcConfigurer {
 //                .addResourceLocations(resourcePath);
 //
 //    }
+
+    /**
+     * Este metodo vamos a utilizarlo para generar 1 controlador de vistas , sin necesidad de generar 1 clase,
+     *  Este metodo recive 1 objeto ViewControllerRegistri , que solo carga la vista pero no tiene lógica del controlador.
+     *  con el setViewName , pasamos el nombre de la vista que vamos a enviar
+     * @param registry
+     */
     public void  addViewControllers(ViewControllerRegistry registry){
         registry.addViewController("/error_403").setViewName("error_403");
 
+    }
+
+    /**
+     * Metodo que vamos a utilizar para codificar el password , utilizaremos BCryp, es uno de lo mas potentes para
+     * spring securiry.
+     * Anotamos con @Bean para que podamos inyectar este método desde la aplicación como un componente de Spring.
+     * @return
+     */
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder (){
+        return  new BCryptPasswordEncoder();
     }
 
 }
