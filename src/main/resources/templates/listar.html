@@ -18,10 +18,10 @@
                 <thead>
                 <tr>
                     <th sec:authorize="hasRole('ROLE_USER')">id</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Dorsal</th>
-                    <th>Inscripicon</th>
+                    <th th:text="#{text.jugador.nombre}">Nombre</th>
+                    <th th:text="#{text.jugador.apellido}">Apellido</th>
+                    <th th:text="#{text.jugador.dorsal}">Dorsal</th>
+                    <th th:text="#{text.jugador.createAt}">Inscripición</th>
                     <th sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
                     <!-- <th>Detalle</th>-->
                     <th sec:authorize="hasRole('ROLE_ADMIN')">Crear Factura</th>
