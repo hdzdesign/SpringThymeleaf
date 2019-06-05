@@ -96,14 +96,15 @@ public class JugadorController {
      */
    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping(value = "/ver/{id}")
-    public String ver(@PathVariable(value = "id") Long id , Map<String,Object> model, RedirectAttributes push){
+    public String ver(@PathVariable(value = "id") Long id , Map<String,Object> model, RedirectAttributes push,
+                      Locale locale ){
         JugadorEntity jugadorEntity =  jugadorService.fetchByWithDonaciones(id);// jugadorService.findOne(id);
         if(jugadorEntity == null){
             push.addFlashAttribute("error", "El jugador no existe en la base de datos");
             return "redirect:/listar";
         }
         model.put("jugadorEntity",jugadorEntity);
-        model.put("tituloDetalle","Detalle del jugador: " + jugadorEntity.getNombre());
+        model.put("tituloDetalle",messageSource.getMessage("text.detalle.jugador", null ,locale) + jugadorEntity.getNombre());
         return "ver";
     }
 
@@ -199,7 +200,7 @@ public class JugadorController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/form/{id}")
-    public String editar (@PathVariable(value = "id") Long id, Map<String , Object> model,RedirectAttributes push){
+    public String editar (@PathVariable(value = "id") Long id, Map<String , Object> model,RedirectAttributes push, Locale locale){
         JugadorEntity jugadorEntity = null;
         //Comprobamos que el id es superior a 0, si no, no existe el jugador.
         if(id >0){
@@ -215,7 +216,7 @@ public class JugadorController {
             return "redirect:/listar";
         }
         model.put("jugadorEntity", jugadorEntity);
-        model.put("titulo","Editar Jugador");
+        model.put("titulo", messageSource.getMessage("text.editar.boton.edit", null , locale));
         return "form";
     }
     /**

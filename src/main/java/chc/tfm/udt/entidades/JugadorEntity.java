@@ -42,7 +42,7 @@ public class JugadorEntity implements Serializable {
     private String telefono;
     @NotEmpty
     @Email
-    @Pattern(regexp=".+@.+\\..+", message = "Formato invalido.")
+    @Pattern(regexp=".+@.+\\..+")
     @Column(name = "mail")
     private String mail;
     @NotNull

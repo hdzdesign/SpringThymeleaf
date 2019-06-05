@@ -8,6 +8,7 @@ import chc.tfm.udt.servicio.IJugadorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 /**
  * Clase controladora de las donaciones destinadas a los jugadores
@@ -32,10 +34,12 @@ public class DonacionController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private IJugadorService jugadorService;
+    @Autowired
+    private MessageSource messageSource;
     @GetMapping("/ver/{id}")
     public String ver(@PathVariable(value = "id") Long id,
                       Model model,
-                      RedirectAttributes push){
+                      RedirectAttributes push, Locale locale){
         log.info("LLega al controller VER");
         DonacionEntity donacion = jugadorService.fechDonacionByIdWithJugadorWithItemDonacionWithProducto(id);//jugadorService.findDonacionById(id);
        if(donacion == null){
@@ -43,7 +47,7 @@ public class DonacionController {
            return "redirect/listar";
        }
        model.addAttribute("donacion", donacion);
-       model.addAttribute("titulo", "Factura: ".concat(donacion.getDescripcion()));
+       model.addAttribute("titulo", messageSource.getMessage("text.detalle.factura.cabecera", null, locale).concat(donacion.getDescripcion()));
        return "donacion/ver";
     }
 
@@ -59,7 +63,7 @@ public class DonacionController {
     public String crear(@PathVariable(  value = "jugadorEntityId")
                                         Long jugadorEntityId,
                                         Map<String, Object> model,
-                                        RedirectAttributes push){
+                                        RedirectAttributes push, Locale locale){
 
         JugadorEntity jugadorEntity = jugadorService.findOne(jugadorEntityId);
 
@@ -71,7 +75,7 @@ public class DonacionController {
         donacion.setJugadorEntity(jugadorEntity);
 
         model.put("donacion", donacion);
-        model.put("titulo", "Crear Donacion.");
+        model.put("titulo",messageSource.getMessage("text.crear.factura.cabecera", null,  locale));
 
         return "donacion/form";
     }

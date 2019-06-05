@@ -10,27 +10,27 @@
         <div class="card-header" th:text="${titulo}"></div>
         <div class="card-body">
             <h4 class="card-title">
-                <a th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}" class="btn btn-light btn-xs"> &laquo;
-                    Volver</a>
+                <a th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}" class="btn btn-light btn-xs" th:text="#{text.detalle.factura.volver}"> &laquo;
+                    </a>
             </h4>
             <ul class="list-group my-2">
-                <li class="list-group-item list-group-item-primary" th:text="'Datos del ciente'"></li>
+                <li class="list-group-item list-group-item-primary" th:text="#{text.detalle.factura.subView1}"></li>
                 <li class="list-group-item" th:text="${donacion.jugadorEntity}"></li>
                 <li class="list-group-item" th:text="${donacion.jugadorEntity.mail}"></li>
 
 
             </ul>
             <ul class="list-group">
-                <li class="list-group-item list-group-item-success" th:text="'Datos de la factura'"></li>
-                <li class="list-group-item" th:text="'Folio: ' + ${donacion.id}"></li>
-                <li class="list-group-item" th:text="'Descripción: ' + ${donacion.descripcion}"></li>
-                <li class="list-group-item" th:text="'Fecha: ' + ${donacion.createAt}"></li>
+                <li class="list-group-item list-group-item-success" th:text="#{text.detalle.factura.subView2}"></li>
+                <li class="list-group-item" th:text="#{text.detalle.factura.folio} + ${donacion.id}"></li>
+                <li class="list-group-item" th:text="#{text.detalle.factura.descripcion} + ${donacion.descripcion}"></li>
+                <li class="list-group-item" th:text="#{text.detalle.factura.fecha} + ${donacion.createAt}"></li>
 
             </ul>
             <!-- If que va a comporobar que existen lineas en la factura-->
             <div class="alert alert-info my-4"
                  th:if="${#lists.isEmpty(donacion.items)}"
-                 th:text="'No Existen líneas para la factura: ' + ${donacion.descripcion}">
+                 th:text="#{text.detalle.factura.errorLineas} + + ${donacion.descripcion}">
             </div>
             <!-- If que va a comporobar que existen lineas en la factura, de lo contrario no muestra la tabla-->
             <table th:if="${not #lists.isEmpty(donacion.items)}"
@@ -38,10 +38,10 @@
 
                 <thead>
                 <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Catntidad</th>
-                    <th>Total</th>
+                    <th th:text="#{text.detalle.factura.producto}"></th>
+                    <th th:text="#{text.detalle.factura.precio}"></th>
+                    <th th:text="#{text.detalle.factura.cantidad}"></th>
+                    <th th:text="#{text.detalle.factura.total}"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -57,11 +57,13 @@
                 </tr>
                 </tbody>
             </table>
-            <h5 class="float-right">Gran total <span th:text="${donacion.total}" class="badge badge-secondary"></span>
+            <h5 class="float-right">
+                Gran Total <span th:text="${donacion.total}"
+                                 class="badge badge-secondary"></span>
             </h5>
             <!-- Comprobamos que vienen observaciones y si es así las mostramos en 1 CARD.-->
             <div class="card border-info mb-4" style="max-width: 20rem;">
-                <div class="card-header"> Observaciones</div>
+                <div class="card-header" th:text="#{text.detalle.factura.observaciones}"></div>
                 <div class="card-body">
                     <p class="card-text"
                        th:text="${donacion.observacion}"
@@ -69,11 +71,11 @@
                     </p>
                     <h4 class="card-title"
                         th:if="${#strings.isEmpty(donacion.observacion)}"
-                        th:text="'No tiene observaciones'">
+                        th:text="#{text.detalle.factura.observaciones.vacio}">
                     </h4>
                 </div>
             </div>
-            <a th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}" class="btn btn-light btn-xs"> &laquo; Volver</a>
+            <a th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}" class="btn btn-light btn-xs" th:text="#{text.detalle.factura.volver}"> &laquo; </a>
         </div>
     </div>
 

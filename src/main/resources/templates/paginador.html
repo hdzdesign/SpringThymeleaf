@@ -8,8 +8,8 @@
                 si es la primera mostramos el span y si no lo es mostramos el link
                 en la etiqueta <a estamos haciendo referencia a la url y el valor por defecto definidos en el controller-->
         <li class="page-item" th:class="${page.first? 'page-item disabled': 'page-item'}"><!-- Preguntamos si es primera página habiltamos la clase y si no no lo hacemos-->
-            <span class="page-link" th:if="${page.first}"> Primera</span>
-            <a class="page-link" th:if="${not page.first}" th:href="@{${page.url}(page=0)}">Primera</a>
+            <span class="page-link" th:if="${page.first}" th:text="#{text.paginator.first}">Primera</span>
+            <a class="page-link" th:if="${not page.first}" th:href="@{${page.url}(page=0)}" th:text="#{text.paginator.first}">Primera</a>
         </li>
 
         <!-- vamos a controlar con un condicional
@@ -17,9 +17,8 @@
              en la etiqueta <a estamos haciendo referencia a la url en el controller
              Y la variable pagina actual -2  de PageRender, menos 2 para paginar en la base de datos.-->
         <li class="page-item" th:class="${not page.hasPrevious? 'page-item disabled': 'page-item'}">
-
-            <span class="page-link" th:if="${not page.hasPrevious}"> &laquo;</span>
-            <a class="page-link" th:if="${page.hasPrevious}" th:href="@{${page.url}(page=${page.paginaActual-2})}">&laquo;</a>
+            <span class="page-link" th:if="${not page.hasPrevious}" th:utext="#{text.paginator.previous}">&laquo</span>
+            <a class="page-link" th:if="${page.hasPrevious}" th:href="@{${page.url}(page=${page.paginaActual-2})}"th:utext="#{text.paginator.previous}">&laquo;</a>
         </li>
 
         <!-- Faltarian los ITEMS , creamos un each , por cada item del list paginas mostramos las paginas
@@ -36,8 +35,8 @@
                 en la etiqueta <a estamos haciendo referencia a la url y el valor por defecto definidos en el controller
                 PAGE.PAGINAACTUAL PARA MOSTRAR ES SIN -1 , PUESTO QUE SOLO ESTAMOS MOSTRANDO Y NO TRABAJANDO CON BASE DE DATOS.-->
         <li class="page-item" th:class="${not page.hasNext? 'page-item disabled': 'page-item'}">
-            <span class="page-link" th:if="${not page.hasNext}"> &raquo;</span>
-            <a class="page-link" th:if="${page.hasNext}" th:href="@{${page.url}(page=${page.paginaActual})}">&raquo;</a>
+            <span class="page-link" th:if="${not page.hasNext}"th:utext="#{text.paginator.next}"> &raquo;</span>
+            <a class="page-link" th:if="${page.hasNext}" th:href="@{${page.url}(page=${page.paginaActual})}"th:utext="#{text.paginator.next}">&raquo;</a>
         </li>
 
         <!-- vamos a controlar con un condicional
@@ -47,8 +46,8 @@
                 y en la vista es desde 1.-->
         <li class="page-item" th:class="${page.last? 'page-item disabled': 'page-item'}">
 
-            <span class="page-link" th:if="${page.last}"> Ultima</span>
-            <a class="page-link" th:if="${not page.last}" th:href="@{${page.url}(page=${page.totalPaginas-1})}">&Uacute;ltima</a>
+            <span class="page-link" th:if="${page.last}"th:text="#{text.paginator.last}"> Ultima</span>
+            <a class="page-link" th:if="${not page.last}" th:href="@{${page.url}(page=${page.totalPaginas-1})}"th:text="#{text.paginator.last}" >&Uacute;ltima</a>
         </li>
 
 

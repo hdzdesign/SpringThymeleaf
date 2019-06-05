@@ -28,7 +28,7 @@
         <form th:action="@{/form}" th:object="${jugadorEntity}" method="post" enctype="multipart/form-data">
 
             <div class="form-group row">
-                <label class=" col-sm-2 col-form-label">Nombre</label>
+                <label class=" col-sm-2 col-form-label" th:text="#{text.editar.nombre}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{nombre}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class=" col-sm-2 col-form-label">1º Apellido</label>
+                <label class=" col-sm-2 col-form-label" th:text="#{text.editar.apellido1}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{apellido1}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -51,7 +51,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class=" col-sm-2 col-form-label">2º apellido</label>
+                <label class=" col-sm-2 col-form-label" th:text="#{text.editar.apellido2}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{apellido2}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class=" col-sm-2 col-form-label">dni</label>
+                <label class=" col-sm-2 col-form-label" th:text="#{text.editar.dni}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{dni}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class=" col-sm-2 col-form-label">dorsal</label>
+                <label class=" col-sm-2 col-form-label" th:text="#{text.editar.dorsal}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{dorsal}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -87,7 +87,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class=" col-sm-2 col-form-label">Email</label>
+                <label class=" col-sm-2 col-form-label"th:text="#{text.editar.email}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{mail}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -99,7 +99,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">inscripcion</label>
+                <label class="col-sm-2 col-form-label" th:text="#{text.editar.inscripcion}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{inscripcion}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -111,7 +111,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">nacimiento</label>
+                <label class="col-sm-2 col-form-label" th:text="#{text.editar.nacimiento}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{nacimiento}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">edad</label>
+                <label class="col-sm-2 col-form-label" th:text="#{text.editar.edad}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{edad}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -135,7 +135,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">nacionalidad</label>
+                <label class="col-sm-2 col-form-label" th:text="#{text.editar.nacionalidad}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{nacionalidad}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -147,7 +147,7 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-2 col-form-label">telefono</label>
+                <label class="col-sm-2 col-form-label" th:text="#{text.editar.telefono}"></label>
                 <div class="col-sm-6">
                     <input type="text" th:field="*{telefono}" class="form-control"
                            th:errorclass="'form-control alert-danger'"/>
@@ -159,13 +159,13 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="file" class="col-sm-2 col-form-label">Foto</label>
+                <label for="file" class="col-sm-2 col-form-label" th:text="#{text.editar.foto}"></label>
                 <div class="col-sm-6">
                     <input type="file" name="file" class="form-control"/>
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" th:value="${titulo}" class="btn btn-primary"/>
+                <input type="submit" th:value="#{text.editar.boton.edit}" class="btn btn-primary"/>
             </div>
             <!-- <input type="hidden" th:field="*{id}"/> se usa para pasar el ID al back aunque es poco seguro, POR
             ESE MOTIVO USAMES EN EL BACK EL OBJETO SESSIÓN-->
