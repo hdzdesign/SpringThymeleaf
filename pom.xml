@@ -96,6 +96,12 @@
 			<artifactId>gson</artifactId>
 			<version>2.2.4</version>
 		</dependency>-->
+		<!--Exportar a pdf-->
+		<dependency>
+			<groupId>com.github.librepdf</groupId>
+			<artifactId>openpdf</artifactId>
+			<version>1.2.18</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
