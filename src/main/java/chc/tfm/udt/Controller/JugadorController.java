@@ -14,6 +14,7 @@ import chc.tfm.udt.utils.paginator.PageRender;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +47,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 
 @SessionAttributes("jugadorEntity")
@@ -58,6 +60,8 @@ public class JugadorController {
     private IJugadorService jugadorService;
     @Autowired
     private IUploadFileService uploadFileService;
+    @Autowired
+    private MessageSource messageSource;
     /**
      * Metodo que vamos a usar para recuperar el rcurso desde el servicio UploadFileService
      * para pasarlo a la vista en el body.
@@ -92,14 +96,15 @@ public class JugadorController {
      */
    @PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
     @GetMapping(value = "/ver/{id}")
-    public String ver(@PathVariable(value = "id") Long id , Map<String,Object> model, RedirectAttributes push){
+    public String ver(@PathVariable(value = "id") Long id , Map<String,Object> model, RedirectAttributes push,
+                      Locale locale ){
         JugadorEntity jugadorEntity =  jugadorService.fetchByWithDonaciones(id);// jugadorService.findOne(id);
         if(jugadorEntity == null){
             push.addFlashAttribute("error", "El jugador no existe en la base de datos");
             return "redirect:/listar";
         }
         model.put("jugadorEntity",jugadorEntity);
-        model.put("tituloDetalle","Detalle del jugador: " + jugadorEntity.getNombre());
+        model.put("tituloDetalle",messageSource.getMessage("text.detalle.jugador", null ,locale) + jugadorEntity.getNombre());
         return "ver";
     }
 
@@ -114,7 +119,8 @@ public class JugadorController {
     @RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
     public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,
                          Authentication authentication,
-                         HttpServletRequest request){
+                         HttpServletRequest request,
+                         Locale locale){
 
         if(authentication != null){
         logger.info("Hola Usuario autenticado, tu username es: ".concat(authentication.getName()));
@@ -163,7 +169,7 @@ public class JugadorController {
         Page<JugadorEntity> jugadorEntityPage = jugadorService.findAll(pageRequest);
         PageRender<JugadorEntity> pageRender = new PageRender<>("/listar", jugadorEntityPage);
 
-        model.addAttribute("titulo","listado de jugadores");
+        model.addAttribute("titulo",messageSource.getMessage( "text.jugador.listar.titulo",null , locale));
         model.addAttribute("jugadores", jugadorEntityPage);
         model.addAttribute("page",pageRender);
         return "listar";
@@ -194,7 +200,7 @@ public class JugadorController {
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/form/{id}")
-    public String editar (@PathVariable(value = "id") Long id, Map<String , Object> model,RedirectAttributes push){
+    public String editar (@PathVariable(value = "id") Long id, Map<String , Object> model,RedirectAttributes push, Locale locale){
         JugadorEntity jugadorEntity = null;
         //Comprobamos que el id es superior a 0, si no, no existe el jugador.
         if(id >0){
@@ -210,7 +216,7 @@ public class JugadorController {
             return "redirect:/listar";
         }
         model.put("jugadorEntity", jugadorEntity);
-        model.put("titulo","Editar Jugador");
+        model.put("titulo", messageSource.getMessage("text.editar.boton.edit", null , locale));
         return "form";
     }
     /**

@@ -14,7 +14,7 @@
             <h4 class="card-title">
                 <a class="btn btn-light btn-xs"
                    th:href="@{'/ver/' + ${donacion.jugadorEntity.id}}"
-                   th:text="'&laquo; volver'"></a>
+                   th:text="#{text.crear.factura.volver}"></a>
             </h4>
             <!-- formulario de entrada de factura.-->
             <form th:action="@{/donacion/form/}"
@@ -23,7 +23,7 @@
             <!-- Recogemos los datos del jugador y su apellido, desabilitamos el campo para que no pueda ser editado.-->
             <div class="form-group row">
                 <label for="jugadorEntity" class="col-sm-2 col-form-label"
-                       th:text="'Jugador'"></label>
+                       th:text="#{text.crear.factura.jugador}"></label>
                 <div class="col-sm-6">
             <input name="jugadorEntity"
                    th:value="${donacion.jugadorEntity.nombre} + ' ' + ${donacion.jugadorEntity.apellido1}"
@@ -33,14 +33,14 @@
             </div>
                 <div class="form-group row">
                     <label for="descripcion" class="col-sm-2 col-form-label"
-                           th:text="'Descripción'"></label>
+                           th:text="#{text.crear.factura.descripcion}"></label>
                     <div class="col-sm-6">
                         <input type="text" th:field="*{descripcion}" class="form-control" th:errorclass="'form-control is-invalid'" />
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                     </div>
                 </div>
             <div class="form-group row">
-                <label for="observacion" class="col-sm-2 col-form-label" th:text="'observacion'"></label>
+                <label for="observacion" class="col-sm-2 col-form-label" th:text="#{text.crear.factura.observacion}"></label>
                 <div class="col-sm-6">
                     <textarea th:field="*{observacion}"
                               class="form-control"></textarea>
@@ -48,7 +48,7 @@
             </div>
             <div class="form-group row">
                 <label for="buscar_producto" class="col-sm-2 col-form-label"
-                       th:text="'Buscar producto'"></label>
+                       th:text="#{text.crear.factura.buscarProducto}"></label>
                 <div class="col-sm-6">
                     <input type="text" name="buscar_producto" id="buscar_producto" class="form-control"/>
                 </div>
@@ -58,11 +58,11 @@
                    class="table table-sm table-striped table-hover">
                 <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Total</th>
-                    <th>Eliminar</th>
+                    <th th:text="#{text.descripcion.factura.nombre}"></th>
+                    <th th:text="#{text.descripcion.factura.precio}"></th>
+                    <th th:text="#{text.descripcion.factura.cantidad}"></th>
+                    <th th:text="#{text.descripcion.factura.total}"></th>
+                    <th th:text="#{text.descripcion.factura.eliminar}"></th>
                 </tr>
                 </thead>
                 <tbody>

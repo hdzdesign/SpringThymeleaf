@@ -5,7 +5,9 @@
 
 <body>
 <header th:replace="layout/layout :: header"></header>
+<div id="i_eliminar_factura" th:text="#{text.detalle.confirmacion.elimiarOK}" style="display: none;"></div>
 <div class="container py-4">
+
 
     <div class="card bg-light">
         <div class="card-header" th:text="${tituloDetalle}"></div>
@@ -13,7 +15,7 @@
             <h4 class="card-title">
                 <a sec:authorize="hasRole('ROLE_ADMIN')" class="btn btn-primary btn-xs"
                    th:href="@{'/donacion/form/' + ${jugadorEntity.id}}"
-                   th:text="'Crear Factura'"></a>
+                   th:text="#{text.jugador.boton.crearFactura}"></a>
             </h4>
             <!--#strings.length El objeto Helpers utilitis de strings th:if="${#strings.length(jugadorEntity.foto) > 0}"
              que nos proporciona muchos metodos para validar y usar en la vista como en el back.-->
@@ -37,7 +39,7 @@
             </ul>
             <!-- Con este condicional  comprobamos que la lista , si esta vacia muestra el mensaje y si no la tabla.-->
             <div th:if="${#lists.isEmpty(jugadorEntity.donaciones)}" class="alert alert-info my-4"
-                 th:text="'No hay donaciones para el jugador '+
+                 th:text="#{text.detalle.noFacturas}+
             ${jugadorEntity.nombre}+' '+
             ${jugadorEntity.apellido1}">
             </div>
@@ -46,12 +48,12 @@
                    class="table table-bordered table-striped my-4">
                 <thead class="thead-inverse">
                 <tr>
-                    <th>Folio</th>
-                    <th>Descripcion</th>
-                    <th>Fecha</th>
-                    <th>Total</th>
-                    <th sec:authorize="hasRole('ROLE_USER')">Ver</th>
-                    <th sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
+                    <th th:text="#{text.detalle.folio}"></th>
+                    <th th:text="#{text.detalle.descripcion}"></th>
+                    <th th:text="#{text.detalle.fecha}"></th>
+                    <th th:text="#{text.detalle.total}"></th>
+                    <th sec:authorize="hasRole('ROLE_USER')" th:text="#{text.detalle.ver}"></th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.detalle.eliminar}" ></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -63,14 +65,14 @@
                     <td sec:authorize="hasRole('ROLE_USER')">
                         <a class="btn btn-primary btn-xs"
                            th:href="@{'/donacion/ver/' + ${donacion.id}}"
-                           th:text="'Detalle'">
+                           th:text="#{text.detalle.ver}">
                         </a>
                     </td>
                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="btn btn-danger btn-xs"
                            th:href="@{'/donacion/eliminar/' + ${donacion.id}}"
-                           th:text="'Eliminar'"
-                           onclick="return confirm('¿Estas seguro que desea eliminar la factura?')">
+                           th:text="#{text.detalle.eliminar}"
+                           onclick="return confirm(document.getElementById('i_eliminar_factura').innerHTML);">
                         </a>
                     </td>
                 </tr>

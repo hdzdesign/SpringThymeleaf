@@ -2,12 +2,14 @@ package chc.tfm.udt.Controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.security.Principal;
+import java.util.Locale;
 
 @Controller
 public class LoginController {
@@ -20,10 +22,11 @@ public class LoginController {
      * @param push
      * @return
      */
+    //private MessageSource messageSource;
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
                         @RequestParam(value = "logout", required = false) String logout,
-            Model model, Principal principal, RedirectAttributes push){
+                        Model model, Principal principal, RedirectAttributes push, Locale locale){
         log.info("Entramos en login");
         if(principal != null){
             log.info("En principal");

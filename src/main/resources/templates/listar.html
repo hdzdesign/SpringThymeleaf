@@ -4,6 +4,7 @@
 <head th:replace="layout/layout :: head"></head>
 <body>
 <header th:replace="layout/layout :: header"></header>
+<div id="i_eliminar_jugador" th:text="#{text.jugador.boton.elimiarOK}" style="display: none;"></div>
 <div class="container py-4">
 
     <div class="card bg-light">
@@ -12,20 +13,20 @@
 <!--Con thymeleaf para validar los botonoes a los que se tiene acceso se usa el atributo authorize-->
             <h4 class="card-title">
                 <a sec:authorize="hasRole('ROLE_ADMIN')"
-                   th:href="@{/form}" class="btn btn-primary btn-xs">crear Jugador</a>
+                   th:href="@{/form}" class="btn btn-primary btn-xs" th:text="#{text.jugador.boton.crear}"></a>
             </h4>
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th sec:authorize="hasRole('ROLE_USER')">id</th>
-                    <th th:text="#{text.jugador.nombre}">Nombre</th>
-                    <th th:text="#{text.jugador.apellido}">Apellido</th>
-                    <th th:text="#{text.jugador.dorsal}">Dorsal</th>
-                    <th th:text="#{text.jugador.createAt}">Inscripición</th>
-                    <th sec:authorize="hasRole('ROLE_ADMIN')">Editar</th>
+                    <th th:text="#{text.jugador.nombre}"></th>
+                    <th th:text="#{text.jugador.apellido}"></th>
+                    <th th:text="#{text.jugador.dorsal}"></th>
+                    <th th:text="#{text.jugador.createAt}"></th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')"th:text="#{text.jugador.boton.editar}"></th>
                     <!-- <th>Detalle</th>-->
-                    <th sec:authorize="hasRole('ROLE_ADMIN')">Crear Factura</th>
-                    <th sec:authorize="hasRole('ROLE_ADMIN')">Eliminar</th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.jugador.boton.crearFactura}"></th>
+                    <th sec:authorize="hasRole('ROLE_ADMIN')" th:text="#{text.jugador.boton.elimiar}"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -44,27 +45,28 @@
                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="btn btn-primary btn-xs"
                         th:href="@{/form/} + ${jugador.id}"
-                        th:text="'Editar'">
+                        th:text="#{text.jugador.boton.editar}">
                          </a>
                     </td>
+                    <!--Detalle
                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="btn btn-warning btn-xs"
                            th:href="@{/ver/} + ${jugador.id}"
-                           th:text="'Detalle'">
+                           th:text="#{text.jugador.boton.detalle}">
                         </a>
-                    </td>
+                    </td>-->
                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="btn btn-warning btn-xs"
                            th:href="@{'/donacion/form/' + ${jugador.id}}"
-                           th:text="'Crear Factura'">
+                           th:text="#{text.jugador.boton.crearFactura}">
                         </a>
                     </td>
 
                     <td sec:authorize="hasRole('ROLE_ADMIN')">
                         <a class="btn btn-danger btn-xs"
                            th:href="@{/eliminar/} + ${jugador.id}"
-                           th:text="'Eliminar'"
-                           onclick="return confirm('¿Estas seguro que quieres elimiar?')">
+                           th:text="#{text.jugador.boton.elimiar}"
+                           onclick="return confirm(document.getElementById('i_eliminar_jugador').innerHTML);">
                         </a>
                     </td>
 
