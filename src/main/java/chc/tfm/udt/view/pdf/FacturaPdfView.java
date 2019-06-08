@@ -5,15 +5,20 @@ import chc.tfm.udt.entidades.DonacionEntity;
 import chc.tfm.udt.entidades.ItemDonacionEntity;
 import com.lowagie.text.Document;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.view.document.AbstractPdfView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.awt.*;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -32,6 +37,10 @@ public class FacturaPdfView extends AbstractPdfView {
      * @param response
      * @throws Exception
      */
+    @Autowired
+    private MessageSource messageSource;
+    @Autowired
+    private LocaleResolver localeResolver;
     @Override
     protected void buildPdfDocument(Map<String, Object> model, Document document, PdfWriter writer,
                                     HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -40,46 +49,73 @@ public class FacturaPdfView extends AbstractPdfView {
          * recuperandolo para popder generar el pdf. Con el objeto PdfTable, creamos las columnas y las celdas
          */
         DonacionEntity factura = (DonacionEntity) model.get("donacion");
+        Locale locale = localeResolver.resolveLocale(request);
+
+        /**
+         * MessagesSorcuer, tiene esta clase que recupera ya directamente el Locale , sin necesidad e instanciarlo,
+         * entonces es 1 manera mucho mas sencilla de recuperar los mensajes.
+         * únicamente debemos recuperar el mensaje , si necesidad de llamar al locale en cada recuperación del mensaje.
+         */
+        MessageSourceAccessor mensajes = getMessageSourceAccessor();
+
         /**
          * cON EL OBJETO PdfPTable , vamos a definir el numero de columnas y después vamos añadir las columnas
          * que queremos que se  vean en nuestro PDF
          */
         PdfPTable tabla = new PdfPTable(1);
         tabla.setSpacingAfter(20);
-        tabla.addCell("Jugador");
+        /**con el Objeto PdfPCell , vamos a definir el Style de la celda
+         *
+         */
+        PdfPCell cell = null;
+        cell = new PdfPCell(new Phrase(messageSource.getMessage("text.pdf.datos.jugador", null, locale)));
+        cell.setBackgroundColor(new Color(184,218 , 255));
+        cell.setPadding(8f);
+        tabla.addCell(cell);
         tabla.addCell(factura.getJugadorEntity().getNombre() + " " + factura.getJugadorEntity().getApellido1());
         tabla.addCell(factura.getJugadorEntity().getMail());
 
         PdfPTable tabla2 = new PdfPTable(1);
         tabla2.setSpacingAfter(20);
-        tabla2.addCell("Datos de la Factura");
-        tabla2.addCell("Folio: " + factura.getId());
-        tabla2.addCell("Descripción: " + factura.getDescripcion());
-        tabla2.addCell("Fecha: " + factura.getCreateAt());
+        cell = new PdfPCell(new Phrase(messageSource.getMessage("text.pdf.datos.factura", null, locale)));
+        cell.setBackgroundColor(new Color(195,230 , 203));
+        cell.setPadding(8f);
+        tabla2.addCell(cell);
+
+        tabla2.addCell(mensajes.getMessage("text.pdf.datos.detalle.folio") + factura.getId());
+        tabla2.addCell(mensajes.getMessage("text.pdf.datos.detalle.descripcion") + factura.getDescripcion());
+        tabla2.addCell(mensajes.getMessage("text.pdf.datos.detalle.fecha") + factura.getCreateAt());
 
         document.add(tabla);
         document.add(tabla2);
-
+        /**
+         * Con setWidth vamos a añadir un espacio relativo a las columnas.
+         */
         PdfPTable tabla3 = new PdfPTable(4);
         tabla3.setSpacingAfter(40);
-        tabla3.addCell("Producto");
-        tabla3.addCell("Precio");
-        tabla3.addCell("Cantidad");
-        tabla3.addCell("Total");
+        tabla3.setWidths(new float[]{3.5f,1,1,1});
+        tabla3.addCell(messageSource.getMessage("text.pdf.datos.detalle.producto",null , locale));
+        tabla3.addCell(messageSource.getMessage("text.pdf.datos.detalle.precio", null, locale));
+        tabla3.addCell(messageSource.getMessage("text.pdf.datos.detalle.cantidad", null, locale));
+        tabla3.addCell(messageSource.getMessage("text.pdf.datos.detalle.total", null, locale));
         /**
          * PAra rellenar 1 lista con datos de otros objetos , hacmeos como en HTML , creamos 1 bucle FOR
          * para ir rellenando las diferentes columnas.
+         * Si queremos añadir estilos a las columnas podemos hacer como anteriormene , declarar el objeto PdfPcell y asi
+         * podemos darle estilos.
          */
         for(ItemDonacionEntity items : factura.getItems()){
             tabla3.addCell(items.getProductoEntity().getNombre());
             tabla3.addCell(items.getProductoEntity().getPrecio().toString());
-            tabla3.addCell(items.getCantidad().toString());
+            cell = new PdfPCell(new Phrase(items.getCantidad().toString()));
+            cell.setHorizontalAlignment(PdfPCell.ALIGN_CENTER);
+            tabla3.addCell(cell);
             tabla3.addCell(items.calcularValor().toString());
         }
         /**
          * Este objeto se usará para darle formato al PDF.
          */
-        PdfPCell cell = new PdfPCell(new Phrase("Total: "));
+        cell = new PdfPCell(new Phrase(messageSource.getMessage("text.pdf.datos.detalle.granTotal", null, locale)));
         cell.setColspan(3);
         cell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
         tabla3.addCell(cell);

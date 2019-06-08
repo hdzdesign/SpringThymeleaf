@@ -43,7 +43,7 @@ public class DonacionController {
         log.info("LLega al controller VER");
         DonacionEntity donacion = jugadorService.fechDonacionByIdWithJugadorWithItemDonacionWithProducto(id);//jugadorService.findDonacionById(id);
        if(donacion == null){
-           push.addFlashAttribute("error", "La factura no existe en la base de datos");
+           push.addFlashAttribute("error", messageSource.getMessage("text.flash.error.ver", null ,locale ));
            return "redirect/listar";
        }
        model.addAttribute("donacion", donacion);
@@ -68,7 +68,7 @@ public class DonacionController {
         JugadorEntity jugadorEntity = jugadorService.findOne(jugadorEntityId);
 
         if(jugadorEntity == null){
-            push.addFlashAttribute("error", "El jugador no existe en la base de datos");
+            push.addFlashAttribute("error", messageSource.getMessage("text.flash.error.crear",null ,locale ));
             return "redirect:/listar";
         }
         DonacionEntity donacion = new DonacionEntity();
@@ -102,7 +102,7 @@ public class DonacionController {
     public String guardar( @ModelAttribute("donacion") @Valid DonacionEntity donacion, BindingResult result, Model model,
                           @RequestParam(name = "item_id[]",required = false) Long[] itemId,
                           @RequestParam(name = "cantidad[]",required = false) Integer[] cantidad,
-                          RedirectAttributes push, SessionStatus status){
+                          RedirectAttributes push, SessionStatus status, Locale locale){
         log.info("Estamos en Guardar");
 
         if(result.hasErrors()){
@@ -113,7 +113,7 @@ public class DonacionController {
         if(itemId == null || itemId.length ==0){
             log.info("Entramos en el If para comprobar las lineas");
             model.addAttribute("titulo", "Crear Factura");
-            model.addAttribute("error", "Las lineas de la factura no pueden estar vacias");
+            model.addAttribute("error", messageSource.getMessage("text.flash.error.lineas",null , locale)); // "Las lineas de la factura no pueden estar vacias"
             return "donacion/form";
         }
         for (int i = 0; i < itemId.length; i++ ){
@@ -128,18 +128,18 @@ public class DonacionController {
         }
         jugadorService.saveDonacion(donacion);
         status.setComplete();
-        push.addFlashAttribute("success", "La Donación ha sido asignada con exito");
+        push.addFlashAttribute("success", messageSource.getMessage("text.flash.exito", null, locale));
         return "redirect:/ver/" + donacion.getJugadorEntity().getId();
     }
     @GetMapping("/eliminar/{id}")
-    public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes push){
+    public String eliminar(@PathVariable(value = "id") Long id, RedirectAttributes push, Locale locale){
         DonacionEntity donacion = jugadorService.findDonacionById(id);
         if(donacion != null){
             jugadorService.deleteDonacion(id);
-            push.addFlashAttribute("success", "La factura fue eliminada correctamente");
+            push.addFlashAttribute("success", messageSource.getMessage("text.flash.eliminar", null, locale));
             return "redirect:/ver/" + donacion.getJugadorEntity().getId();
         }
-        push.addFlashAttribute("error", "La factura no existe en la base de datos");
+        push.addFlashAttribute("error", messageSource.getMessage("text.flash.error.eliminar", null, locale));
         return "redirect:/listar";
     }
 
