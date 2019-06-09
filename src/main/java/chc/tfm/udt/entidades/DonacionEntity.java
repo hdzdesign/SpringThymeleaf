@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,5 +75,9 @@ public class DonacionEntity implements Serializable {
             total += items.get(i).calcularValor();
         }
         return total;
+    }
+    @XmlTransient
+    public JugadorEntity getJugadorEntity() {
+        return jugadorEntity;
     }
 }

@@ -3,6 +3,7 @@ package chc.tfm.udt.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -16,6 +17,8 @@ import java.util.Locale;
 
 /**
  * Clase que implimenta a WebMvcConfigurer , para poder complementar y modificar la configuración
+ * Al anotar esta clase con @Configuration , cuando arranca el contexto de Spring lee esta clase y carga en el contexto
+ * aquellos metodos que esten anotados con @Bean para poder ser inyectados en el resto de la aplicación.
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
@@ -88,5 +91,25 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
+    }
+
+    /**
+     * Declaramos el constructor y llamamos al metodo:
+     * SetClassesToBeBound Con este metodo vamos a conseguir declarar un Array de clases que queremos pasar a XML
+     * Los nombres de las clases , las vamos a serializar , Retornamos el marshaller,
+     * Con esta configuración , vamos a utilizar en la vista XML para convertir la respuesta , el bojeto Entity en un
+     * documento XML , siendo este metodo el conversor.
+     * JSON se puede serializar sin problema List, HasList, de objetos, que luego se convierten en un JSON
+     * XML no puede convertir un objeto List , collection , por eso esta clase Wapper que envuelva la lista
+     *
+     * - chc.tfm.udt.view.xml.JugadorList.class, ahora ya esta configurado completamente, cuando exportemos, va a recoger
+     * la lista de la clase envoltorio y la va a mapear en el documento XML
+     * @return
+     */
+    @Bean
+    public Jaxb2Marshaller jaxb2Marshaller(){
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setClassesToBeBound(new Class[] {chc.tfm.udt.view.xml.JugadorList.class});
+        return marshaller;
     }
 }
