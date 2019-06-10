@@ -1,6 +1,9 @@
 package chc.tfm.udt.entidades;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,6 +50,7 @@ public class JugadorEntity implements Serializable {
     private String mail;
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "nacimiento")
     @Temporal(TemporalType.DATE)
     private Date nacimiento;
@@ -59,6 +63,7 @@ public class JugadorEntity implements Serializable {
     //Anotación para transformar la fecha para base de datos.
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "inscripcion")
     @Temporal(TemporalType.DATE)
     private Date inscripcion;
@@ -75,6 +80,7 @@ public class JugadorEntity implements Serializable {
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @JsonManagedReference
     private List<DonacionEntity> donaciones;
 
     /**

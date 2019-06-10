@@ -1,5 +1,6 @@
 package chc.tfm.udt.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class ItemDonacionEntity implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private ProductoEntity productoEntity;
 
   /*  @ManyToOne(fetch = FetchType.LAZY)

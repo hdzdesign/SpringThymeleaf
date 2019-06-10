@@ -1,5 +1,6 @@
 package chc.tfm.udt.entidades;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class DonacionEntity implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY) // Solo se realiza la consulta cuando se invoca al metodo
     @JoinColumn(name = "jugador_id")
+    @JsonBackReference
     private JugadorEntity jugadorEntity;
     /**
      * Una donación contiene muchos itemsDonaciónEntity.

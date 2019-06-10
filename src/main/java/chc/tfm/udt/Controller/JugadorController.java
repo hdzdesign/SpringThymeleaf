@@ -47,6 +47,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -107,6 +108,7 @@ public class JugadorController {
         model.put("tituloDetalle",messageSource.getMessage("text.detalle.jugador", null ,locale) + jugadorEntity.getNombre());
         return "ver";
     }
+
 
     /**
      * USAMOS ESTE METODO PARA LISTAR TODOS LOS JUGADORES QUE ESTAN EN BASE DE DATOS.
