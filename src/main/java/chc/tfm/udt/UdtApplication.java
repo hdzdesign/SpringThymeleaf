@@ -30,9 +30,12 @@ public class UdtApplication implements CommandLineRunner {
 		 * String , BCrypt es tan potente porque nos permite generar contraseñas distintas con 1 mismo string.
 		 */
 		String password = "1234";
+		String password1 = "admin";
 		for (int i = 0; i<2; i++){
 			String bcryptPassword = passwordEncoder.encode(password);
+			String bcryptPassword1 = passwordEncoder.encode(password1);
 			System.out.println(bcryptPassword);
+			System.out.println("ESTA ES LA DE YO : = admin "+bcryptPassword1);
 		}
 	}
 }

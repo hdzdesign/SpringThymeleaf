@@ -108,18 +108,6 @@ public class JugadorController {
         model.put("tituloDetalle",messageSource.getMessage("text.detalle.jugador", null ,locale) + jugadorEntity.getNombre());
         return "ver";
     }
-
-    /**
-     * Mi primer metodo REST.
-     */
-    @GetMapping(value = "listar-rest")
-    public @ResponseBody List<JugadorEntity> listar() {
-        return jugadorService.findAll();
-    }
-
-
-
-
         /**
          * USAMOS ESTE METODO PARA LISTAR TODOS LOS JUGADORES QUE ESTAN EN BASE DE DATOS.
          * @param model USAMOS ESTE OBJETO PARA PASAR DATOS A LA VISTA.
