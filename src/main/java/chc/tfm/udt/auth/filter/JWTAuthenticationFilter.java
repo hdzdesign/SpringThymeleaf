@@ -1,30 +1,24 @@
 package chc.tfm.udt.auth.filter;
 
+import chc.tfm.udt.auth.service.JWTService;
+import chc.tfm.udt.auth.service.JWTServiceImpl;
 import chc.tfm.udt.entidades.UsuarioEntity;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,9 +32,11 @@ import java.util.Map;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
+    private JWTService jwtService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,JWTService jwtService) {
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
 
     }
@@ -101,20 +97,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /**
-     * 1º  Obtenemos el autentication , donde almacenamos los datos del usuario
-     * 2º  Con el username ya podemos crear el Token
-     * 3º  Se firma con un algoritmo y una clave secreta
-     * 4º  creamos el Header , pasamos el autentication y pasamos el Token con el prefijo Bearer
-     * 5º  Creamos 1 map para pasar el token al usuario
-     * 6º  Guardamos este mensaje en formato Json
-     * 7º  Un estatus
-     * 8º  El contentype pasamos que es un Json.
-     * 9º  Creamos la KEY
-     * 10º Seteamos el tiempo de Creación y de expiración
-     * 11º Recuperamos los roles con authResult, recuperamos un Collection
-     * 12º Al ser parte de los claims pues hay que añadirlos
-     * 13º No se puede añadir los authorities como objeto , asique lo vamos a pasar a string con ObjectMapper.
-     * 11º Importante añadir los claims
+      * LLamamos a la clase Service para crear el TOKEN
+     * Recogemos todos los datos para enviarlos en el body en 1 respeusta.
      * @param request
      * @param response
      * @param chain
@@ -124,28 +108,36 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        String username = ((User)authResult.getPrincipal()).getUsername();
-        Collection<? extends GrantedAuthority> roles =  authResult.getAuthorities();
-        Claims claims = Jwts.claims();
-        claims.put("authorities",new ObjectMapper().writeValueAsString(roles));
-        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-        /**
-         * Si queremos generar la clave secreta para decodificarla después.
-         */
-       String token = Jwts.builder()
-               .setClaims(claims)
-                .setSubject(username)
-                .signWith(secretKey)
-               .setIssuedAt(new Date())
-               .setExpiration(new Date(System.currentTimeMillis() + 3600000L))
-               .compact();
-        response.addHeader("Authorization", "Bearer" + token);
+        String token = jwtService.create(authResult);
+
+        response.addHeader(JWTServiceImpl.HEADER_STRING, JWTServiceImpl.TOKEN_PREFIX + token);
         Map<String,Object> body = new HashMap<String,Object>();
         body.put("token", token);
         body.put("user", (User) authResult.getPrincipal());
-        body.put("mensaje",String.format("Hola %s, has inciado sesión con exito",username));
+        body.put("mensaje",String.format("Hola %s, has inciado sesión con exito",((User) authResult.getPrincipal()).getUsername()));
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
         response.setContentType("application/json");
+    }
+
+    /**
+     * Cuando la autenticación no ha ido bien.
+     * podemos enviar mensajes al usuario de forma básica , o redirigir a 1 pagina personalizada.
+     * @param request
+     * @param response
+     * @param failed
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        Map<String, Object> body = new HashMap<>();
+        body.put("mensaje","Error de autenticacion : usuario o password incorrectos" );
+        body.put("error", failed.getMessage());
+        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.setStatus(401);
+        response.setContentType("application/json");
+
     }
 }
