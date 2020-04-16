@@ -53,7 +53,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     /**
      * Metodo que vamos a utilizar para codificar el password , utilizaremos BCryp, es uno de lo mas potentes para
-     * spring securiry.
+     * spring securiry config
      * Anotamos con @Bean para que podamos inyectar este método desde la aplicación como un componente de Spring.
      * @return
      */
@@ -73,7 +73,7 @@ public class MvcConfig implements WebMvcConfigurer {
     }
     /**
      * Este metodo va a ser el interceptor que se va encargar de cambiar los textos, cada vez que pasemos,
-     * por url el parametro lang se va a realizar el cambio porque detecta el interceptor
+     * por url el parametro lang se va a realizar el cambio porque detecta el interceptoraa
      *
      */
     @Bean

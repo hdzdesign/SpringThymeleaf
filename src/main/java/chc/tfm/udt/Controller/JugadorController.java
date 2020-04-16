@@ -108,15 +108,13 @@ public class JugadorController {
         model.put("tituloDetalle",messageSource.getMessage("text.detalle.jugador", null ,locale) + jugadorEntity.getNombre());
         return "ver";
     }
-
-
-    /**
-     * USAMOS ESTE METODO PARA LISTAR TODOS LOS JUGADORES QUE ESTAN EN BASE DE DATOS.
-     * @param model USAMOS ESTE OBJETO PARA PASAR DATOS A LA VISTA.
-     * CREAMOS EL OBJETO PAGEABLE Y LE PASAMOS UN NUMERO DE PAGINAS PARA MOSTRAR, LE ASIGNAMOS UN VALOR POR DEFECTO Y UNA VARIABLE.
-     * Creamos 1 array con 2 rutas , listar y la página de incio de la aplicación
-     * @return
-     */
+        /**
+         * USAMOS ESTE METODO PARA LISTAR TODOS LOS JUGADORES QUE ESTAN EN BASE DE DATOS.
+         * @param model USAMOS ESTE OBJETO PARA PASAR DATOS A LA VISTA.
+         * CREAMOS EL OBJETO PAGEABLE Y LE PASAMOS UN NUMERO DE PAGINAS PARA MOSTRAR, LE ASIGNAMOS UN VALOR POR DEFECTO Y UNA VARIABLE.
+         * Creamos 1 array con 2 rutas , listar y la página de incio de la aplicación
+         * @return
+         */
 
     @RequestMapping(value = {"/listar", "/"}, method = RequestMethod.GET)
     public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model,

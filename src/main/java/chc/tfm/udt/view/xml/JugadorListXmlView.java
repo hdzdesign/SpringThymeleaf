@@ -21,6 +21,7 @@ public class JugadorListXmlView extends MarshallingView {
     /**
      * Implementamos el Constructor de la Suoper clase , y hacemos una pequeña modificación , Ponemos la implementación
      * de la interfaz definida en la clase Configuración. Hay que inyectar con Autowired
+     *
      * @param marshaller
      */
     @Autowired
@@ -37,13 +38,13 @@ public class JugadorListXmlView extends MarshallingView {
      * @param response
      * @throws Exception
      */
-
+    @SuppressWarnings("unchecked")
     @Override
     protected void renderMergedOutputModel(Map<String, Object> model, HttpServletRequest request,
                                            HttpServletResponse response) throws Exception {
         model.remove("titulo");
         model.remove("page");
-        Page<JugadorEntity> jugadores = (Page<JugadorEntity>)model.get("jugadores");
+        Page<JugadorEntity> jugadores = (Page<JugadorEntity>) model.get("jugadores");
 
         model.remove("jugadores");
         /**
@@ -57,8 +58,7 @@ public class JugadorListXmlView extends MarshallingView {
          * 5º Hacemos un put, para enchufarle la lsita que esta en la clase envoltorio
          * 6º Le pasamso a la clase Padre através del metodo super , el model cargado con la lista, request y response
          */
-        model.put("jugadorList",new JugadorList(jugadores.getContent()));
-
+        model.put("jugadorList", new JugadorList(jugadores.getContent()));
 
 
         super.renderMergedOutputModel(model, request, response);

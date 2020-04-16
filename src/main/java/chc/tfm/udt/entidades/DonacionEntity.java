@@ -1,6 +1,7 @@
 package chc.tfm.udt.entidades;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -32,6 +33,7 @@ public class DonacionEntity implements Serializable {
     private String observacion;
 
     @Temporal(TemporalType.DATE)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "create_at")
     private Date createAt;
     /**
