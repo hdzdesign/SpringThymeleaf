@@ -1,6 +1,9 @@
 package chc.tfm.udt.config;
 
 import chc.tfm.udt.auth.LoginSuccesHandler;
+import chc.tfm.udt.auth.filter.JWTAuthenticationFilter;
+import chc.tfm.udt.auth.filter.JWTAuthorizationFilter;
+import chc.tfm.udt.auth.service.JWTService;
 import chc.tfm.udt.servicio.JpaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -8,12 +11,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import javax.sql.DataSource;
 
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 @Configuration
@@ -28,6 +27,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private JpaUserDetailsService userDetailsService;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private JWTService jwtService;
 
 
     /**
@@ -46,14 +47,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
          * pase automaticamente a la pagina de login
          */
         http.authorizeRequests()
-                .antMatchers("/", "/css/**", "/js/**", "/img/**","/listar**","/locale").permitAll()
-/*                .antMatchers("/ver/**").hasAnyRole("USER")
-                .antMatchers("/uploads/**").hasAnyRole("USER")
-                .antMatchers("/form/**").hasAnyRole("ADMIN")
-                .antMatchers("/eliminar/**").hasAnyRole("ADMIN")
-                .antMatchers("/donacion/**").hasAnyRole("ADMIN")*/
+                .antMatchers("/", "/css/**", "/js/**", "/img/**","/listar**","/locale","/login").permitAll()
                 .anyRequest().authenticated()
-                .and()
+               //Esta parte del código esta comentada por pertenecer al inicio de sesión basado en Sesiones
+             /*  .and()
                     .formLogin()
                         .successHandler(succesHandler)// Inyección de la clase LoginSuccesHandler
                         .loginPage("/login")
@@ -62,7 +59,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout().permitAll()
                 .and()
                     .exceptionHandling()
-                        .accessDeniedPage("/error_403"); // Excepción de acceso denegado
+                        .accessDeniedPage("/error_403") // Excepción de acceso denegado*/
+                .and()// Añadimos el filtro de JWT.
+                    .addFilter(new JWTAuthenticationFilter(authenticationManager(),jwtService))
+                    .addFilter(new JWTAuthorizationFilter(authenticationManager(),jwtService))
+                    .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        /**
+         * Vamos habilitar el sessiónmanager sin estado con el atributo STATELESS, con esta configuración si ejecutamos
+         * no vamos a tener sessión , no hay manejo de sesiión , no va a fuincionar. porque no se mantiene persistente.
+         */
     }
 
     /**
