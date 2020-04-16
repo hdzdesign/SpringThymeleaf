@@ -46,7 +46,7 @@ public class JWTServiceImpl implements JWTService {
     public static final String HEADER_STRING = "Authorization";
 
     @Override
-    public String create(Authentication auth) throws JsonProcessingException {
+    public String create(Authentication auth) throws IOException {
 
         String username = ((User)auth.getPrincipal()).getUsername();
         Collection<? extends GrantedAuthority> roles =  auth.getAuthorities();

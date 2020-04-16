@@ -47,7 +47,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
          * pase automaticamente a la pagina de login
          */
         http.authorizeRequests()
-                .antMatchers("/", "/css/**", "/js/**", "/img/**","/listar**","/locale").permitAll()
+                .antMatchers("/", "/css/**", "/js/**", "/img/**","/listar**","/locale","/login").permitAll()
                 .anyRequest().authenticated()
                //Esta parte del código esta comentada por pertenecer al inicio de sesión basado en Sesiones
              /*  .and()

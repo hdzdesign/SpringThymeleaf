@@ -115,6 +115,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("token", token);
         body.put("user", (User) authResult.getPrincipal());
         body.put("mensaje",String.format("Hola %s, has inciado sesión con exito",((User) authResult.getPrincipal()).getUsername()));
+        //Convertimos a JSON
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
         response.setContentType("application/json");

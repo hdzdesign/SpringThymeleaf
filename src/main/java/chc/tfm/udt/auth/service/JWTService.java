@@ -8,7 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.IOException;
 import java.util.Collection;
 public interface JWTService {
-    String create(Authentication auth) throws JsonProcessingException;
+    String create(Authentication auth) throws IOException;
     Boolean validate(String token);
     Claims getClaims(String token);
     String getUsername(String token);
